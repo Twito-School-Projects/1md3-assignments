@@ -1,56 +1,3 @@
-
-#old solution please ignore (or look at i)
-# #works for now but it will fail with large numbers because of the call stack
-# def is_valid_number(num: str) -> bool:
-#     """
-#     Returns True if and only if num is represents a valid number.
-#     See the corresponding .pdf for a definition of what a valid number
-#     would be.
-
-#     >>> is_valid_number("10")
-#     True
-#     >>> is_valid_number("-124")
-#     True
-#     >>> is_valid_number("12.9")
-#     True
-#     >>> is_valid_number("12.9.0")
-#     False
-#     >>> is_valid_number("abc")
-#     False
-#     """
-
-#     #professor, there is technically no loops
-#     allowed_characters = "-1234567890."
-#     number_characters = "1234567890"
-
-#     def recursive(num: str, usedDecimal = False, hasDigits = False, original = num) -> bool:        
-#       if len(num) == 0:
-#         return hasDigits
-      
-#       char = num[0]
-
-#       if char in allowed_characters:
-#           #the dash is not the first character
-#           if char == '-' and len(original) != len(num):
-#               return False
-          
-#           if char == '.':
-#               if usedDecimal:
-#                 return False
-#               else:
-#                   usedDecimal = True
-          
-#           if char in number_characters:
-#               hasDigits = True
-
-#           return recursive(num[1:], usedDecimal, hasDigits, original)
-
-#       return False
-  
-#     return recursive(num, False, False, num)  
-
-
-#works for now but it will fail with large numbers because of the call stack
 def is_valid_number(num: str) -> bool:
     """
     Returns True if and only if num is represents a valid number.
@@ -68,7 +15,6 @@ def is_valid_number(num: str) -> bool:
     >>> is_valid_number("abc")
     False
     """
-
     if not num:
         return False
     
@@ -82,10 +28,7 @@ def is_valid_number(num: str) -> bool:
 
     num = num.replace(".", "")
 
-    if not num.isdigit():
-        return False
-    
-    return True
+    return num.isdigit()
 
 
 def is_valid_term(term: str) -> bool:
@@ -128,7 +71,6 @@ def approx_equal(x: float, y: float, tol: float) -> bool:
     >>> approx_equal(0.999, 1, 0.0001)
     False
     """
-    #TODO
     return abs(x - y) <= tol
 
 
@@ -146,7 +88,7 @@ def degree_of(term: str) -> int:
     """
 
     coefficient = get_coefficient(term)
-    if coefficient != coefficient:
+    if coefficient != coefficient: #nan == nan == False
         return -1
     
     if term.count('^') > 1:
@@ -166,7 +108,7 @@ def degree_of(term: str) -> int:
         return 0
     
     #do not allow floats
-    if degree.count(".") >= 1 or degree.startswith("-"):
+    if degree.count(".") >= 1 or degree.count("-") >= 1:
         return -1
 
     if is_valid_number(degree):
@@ -228,7 +170,6 @@ def evaluate(poly, x):
         value += coefficient * x**degree
     return value
       
-
 if __name__ == "__main__": 
   
   poly_string = input("Please enter a polynomial: ")
