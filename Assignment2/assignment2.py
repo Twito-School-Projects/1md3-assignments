@@ -172,7 +172,7 @@ def compress(raw: List[List[List[int]]]) -> List[List[List[int]]]:
                 processed_pixel[2] += pixel[2]
 
             # yes i am well aware that we haven't learnt lambdas yet
-            processed_pixel = map(lambda x: x // len(data_to_process), processed_pixel)
+            processed_pixel = list(map(lambda x: x // len(data_to_process), processed_pixel))
             compressed_output[image_row // 2].append(processed_pixel)
 
     # dont worry about the space complexity
