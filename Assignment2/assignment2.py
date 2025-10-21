@@ -1,6 +1,7 @@
 from PIL import Image
 from typing import List
 
+
 def mirror(raw: List[List[List[int]]]) -> None:
     """
     Assume raw is image data. Modifies raw by reversing all the rows
@@ -17,9 +18,6 @@ def mirror(raw: List[List[List[int]]]) -> None:
 
     for image_row in raw:
         image_row = image_row.reverse()
-
-
-print(mirror([[[4, 5, 6], [1, 2, 3]], [[10, 11, 12], [7, 8, 9]]]))
 
 
 def grey(raw: List[List[List[int]]]) -> None:
@@ -105,9 +103,9 @@ def merge(
             if not raw1_has_pixel and not raw2_has_pixel:
                 merged_output[image_row][pixel_col] = [0, 0, 0]  # black pixel
 
-            elif raw1_has_pixel and not raw2_has_pixel:
+            elif not raw2_has_pixel:
                 merged_output[image_row].append(raw1[image_row][pixel_col])
-            elif raw2_has_pixel and not raw1_has_pixel:
+            elif not raw1_has_pixel:
                 merged_output[image_row].append(raw2[image_row][pixel_col])
 
             elif image_row % 2 == 0:
@@ -153,42 +151,33 @@ def compress(raw: List[List[List[int]]]) -> List[List[List[int]]]:
 
         for pixel_col in range(0, width, 2):
             left_most_pixel = raw[image_row][pixel_col]
+            data_to_process = [left_most_pixel]
 
-            black = [0, 0, 0]
-            length = 1
-            down_right_pixel = black
-            bottom_pixel = black
-            right_pixel = black
-            
             if len(raw) > image_row + 1:
                 bottom_pixel = raw[image_row + 1][pixel_col]
-                length += 1
+                data_to_process.append(bottom_pixel)
 
             if len(raw[image_row]) > pixel_col + 1:
                 right_pixel = raw[image_row][pixel_col + 1]
-                length += 1
+                data_to_process.append(right_pixel)
 
             if len(raw) > image_row + 1 and len(raw[image_row + 1]) > pixel_col + 1:
                 down_right_pixel = raw[image_row + 1][pixel_col + 1]
-                length += 1
+                data_to_process.append(down_right_pixel)
 
-            # print(left_most_pixel, rightPixel, bottom_pixel, down_right_pixel)
+            processed_pixel = [0, 0, 0]
+            for pixel in data_to_process:
+                processed_pixel[0] += pixel[0]
+                processed_pixel[1] += pixel[1]
+                processed_pixel[2] += pixel[2]
 
-            data = [left_most_pixel, down_right_pixel, bottom_pixel, right_pixel]
-            r = 0
-            g = 0
-            b = 0
-            for x in data:
-                r += x[0]
-                g += x[1]
-                b += x[2]
-            r = r // length
-            g = g // length
-            b = b // length
-            compressed_output[image_row // 2].append([r, g, b])
+            # yes i am well aware that we haven't learnt lambdas yet
+            processed_pixel = map(lambda x: x // len(data_to_process), processed_pixel)
+            compressed_output[image_row // 2].append(processed_pixel)
 
     # dont worry about the space complexity
     return compressed_output
+
 
 """
 **********************************************************
@@ -235,7 +224,7 @@ def test(base_file: str):
     inverted = get_raw_image(base_file + ".jpg")
     grayscaled = get_raw_image(base_file + ".jpg")
     compressed = get_raw_image(base_file + ".jpg")
-    
+
     invert(inverted)
     grey(grayscaled)
     mirror(mirrored)
@@ -248,4 +237,4 @@ def test(base_file: str):
 
 
 # test("assets/lotus1/lotus")
-test("assets/lotus2/lotus")
+# test("assets/lotus2/lotus")
