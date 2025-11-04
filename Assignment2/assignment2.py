@@ -152,17 +152,19 @@ def compress(raw: List[List[List[int]]]) -> List[List[List[int]]]:
         for pixel_col in range(0, width, 2):
             left_most_pixel = raw[image_row][pixel_col]
             data_to_process = [left_most_pixel]
-
-            if len(raw) > image_row + 1:
-                bottom_pixel = raw[image_row + 1][pixel_col]
+            next_row_index = image_row + 1
+            next_col_index = pixel_col + 1
+            
+            if len(raw) > next_row_index:
+                bottom_pixel = raw[next_row_index][pixel_col]
                 data_to_process.append(bottom_pixel)
 
-            if len(raw[image_row]) > pixel_col + 1:
-                right_pixel = raw[image_row][pixel_col + 1]
+            if len(raw[image_row]) > next_col_index:
+                right_pixel = raw[image_row][next_col_index]
                 data_to_process.append(right_pixel)
 
-            if len(raw) > image_row + 1 and len(raw[image_row + 1]) > pixel_col + 1:
-                down_right_pixel = raw[image_row + 1][pixel_col + 1]
+            if len(raw) > next_row_index and len(raw[next_row_index]) > next_col_index:
+                down_right_pixel = raw[next_row_index][next_col_index]
                 data_to_process.append(down_right_pixel)
 
             processed_pixel = [0, 0, 0]
@@ -224,17 +226,30 @@ def test(base_file: str):
     inverted = get_raw_image(base_file + ".jpg")
     grayscaled = get_raw_image(base_file + ".jpg")
     compressed = get_raw_image(base_file + ".jpg")
+    all = get_raw_image(base_file + ".jpg")
+    super_compressed = get_raw_image(base_file + ".jpg")
 
     invert(inverted)
     grey(grayscaled)
     mirror(mirrored)
     compress(compressed)
 
+    compress(all)
+    grey(all)
+    invert(all)
+    mirror(all)
+    super_compressed = compress_n_times(super_compressed, 100)
+
+    image_from_raw(all, base_file + "-all.jpg")
     image_from_raw(mirrored, base_file + "-mirrored.jpg")
     image_from_raw(inverted, base_file + "-inverted.jpg")
     image_from_raw(grayscaled, base_file + "-grayscaled.jpg")
     image_from_raw(compressed, base_file + "-compressed.jpg")
+    image_from_raw(super_compressed, base_file + "-super-compressed.jpg")
 
+def compress_n_times(data, n):
+    for _ in range(n):
+        compress(data)
 
 # test("assets/lotus1/lotus")
 # test("assets/lotus2/lotus")
