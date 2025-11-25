@@ -234,11 +234,12 @@ def test(base_file: str):
     mirror(mirrored)
     compress(compressed)
 
-    compress(all)
     grey(all)
     invert(all)
     mirror(all)
-    super_compressed = compress_n_times(super_compressed, 100)
+    
+    all = compress_n_times(all, 3)
+    super_compressed = compress_n_times(super_compressed, 3)
 
     image_from_raw(all, base_file + "-all.jpg")
     image_from_raw(mirrored, base_file + "-mirrored.jpg")
@@ -246,10 +247,18 @@ def test(base_file: str):
     image_from_raw(grayscaled, base_file + "-grayscaled.jpg")
     image_from_raw(compressed, base_file + "-compressed.jpg")
     image_from_raw(super_compressed, base_file + "-super-compressed.jpg")
+    
+    print("Completed!")
 
 def compress_n_times(data, n):
     for _ in range(n):
-        compress(data)
+        data = compress(data)
+    return data
 
-# test("assets/lotus1/lotus")
-# test("assets/lotus2/lotus")
+test("assets/lotus1/lotus")
+test("assets/lotus2/lotus")
+test("assets/dva/dva")
+test("assets/obama/obama")
+test("assets/mcmaster/mcmaster")
+test("assets/zelda/zelda")
+test("assets/inverted/inverted")
